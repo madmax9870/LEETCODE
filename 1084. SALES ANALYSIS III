@@ -1,15 +1,5 @@
-WITH quarter_sales AS (
-    SELECT DISTINCT product_id 
-    FROM sales 
-    WHERE sale_date BETWEEN '2019-01-01' AND '2019-03-31'
-),
-after_quarter_sales AS (
-    SELECT DISTINCT product_id 
-    FROM sales 
-    WHERE sale_date > '2019-03-31'
-)
-SELECT p.product_id, p.product_name
-FROM product p
-JOIN quarter_sales qs ON p.product_id = qs.product_id
-LEFT JOIN after_quarter_sales aqs ON p.product_id = aqs.product_id
-WHERE aqs.product_id IS NULL;
+SELECT DISTINCT p.product_id, p.product_name
+FROM Sales s
+LEFT JOIN Product p ON p.product_id = s.product_id
+GROUP BY p.product_id
+HAVING MIN(sale_date) >= '2019-01-01' AND MAX(sale_date) <= '2019-03-31';
